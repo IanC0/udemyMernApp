@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
+import Card  from "../../shared/components/UIElements/Card";
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
@@ -13,7 +14,7 @@ import "./PlaceForm.css";
 const DUMMY_PLACES = [
   {
     id: "p1",
-    title: "Empire State Building",
+    title: "Emp. State Building",
     description: "building",
     imageURL:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/500px-Empire_State_Building_%28aerial_view%29.jpg",
@@ -40,7 +41,7 @@ const DUMMY_PLACES = [
 ];
 
 const UpdatePlace = (props) => {
-  const [isLoading, setisLoading] = useState(true); 
+  const [isLoading, setisLoading] = useState(true);
   const placeId = useParams().placeId;
 
   const [formState, inputHandler, setFormData] = useForm(
@@ -58,22 +59,24 @@ const UpdatePlace = (props) => {
   );
 
   const identifiedPlace = DUMMY_PLACES.find((p) => p.id === placeId);
-    console.log(!identifiedPlace)
+
   useEffect(() => {
-    setFormData(
-      {
-        title: {
-          value: identifiedPlace.title,
-          isValid: true,
+    if (identifiedPlace) {
+      setFormData(
+        {
+          title: {
+            value: identifiedPlace.title,
+            isValid: true,
+          },
+          description: {
+            value: identifiedPlace.description,
+            isValid: true,
+          },
         },
-        description: {
-          value: identifiedPlace.description,
-          isValid: true,
-        },
-      },
-      true
-    );
-    setisLoading(false)
+        true
+      );
+    }
+    setisLoading(false);
   }, [setFormData, identifiedPlace]);
 
   const placeUpdateSubmitHandler = (event) => {
@@ -84,7 +87,9 @@ const UpdatePlace = (props) => {
   if (!identifiedPlace) {
     return (
       <div className="center">
+        <Card>
         <h2>Could not find place!</h2>
+        </Card>
       </div>
     );
   }
