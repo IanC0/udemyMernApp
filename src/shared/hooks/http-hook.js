@@ -15,19 +15,21 @@ export const useHttpClient = () => {
     setIsLoading(true);
     const httpAbortCtrl = new AbortController();
     activeHttpRequests.current.push = (httpAbortCtrl);
+
     try {
       const response = await fetch(url, {
         method,
         body,
         headers,
-        signal: activeHttpRequests.curr
+        signal: httpAbortCtrl.signal
       });
       const responseData = await response.json();
 
+      // want to remove only the successful request, would still want to retain those
+      // requests that are being processed but are not yet successful/complete
       activeHttpRequests.current = activeHttpRequests.current.filter(
         reqCtrl => reqCtrl !== httpAbortCtrl
         )
-
       if (!response.ok) {
         throw new Error(responseData.message);
       }
@@ -47,6 +49,7 @@ export const useHttpClient = () => {
   }
 
   useEffect(() => {
+    // cleanup for removing incomplete http requests
     return () => {
         activeHttpRequests.current.forEach(abortCtrl => abortCtrl.abort())
     }
