@@ -65,7 +65,7 @@ const Auth = (props) => {
 
     if (isLoginMode) {
       try {
-        await sendRequest(
+        const responseData = await sendRequest(
           "http://localhost:5000/api/users/login",
           "POST",
           JSON.stringify({
@@ -76,15 +76,14 @@ const Auth = (props) => {
             "Content-Type": "application/json",
           }
         );
-
-        auth.login();
+        auth.login(responseData.user.id);
       } catch {
         // can be left blank or use a .then() without a catch
       }
 
     } else {
       try {
-        await sendRequest(
+        const responseData = await sendRequest(
           "http://localhost:5000/api/users/signup", 
           "POST", JSON.stringify({
           name: formState.inputs.name.value,
@@ -96,7 +95,7 @@ const Auth = (props) => {
         }
       );
 
-        auth.login();
+        auth.login(responseData.user.id);
       } catch (err) {// Max left empty
         }
     }
